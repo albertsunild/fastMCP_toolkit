@@ -69,7 +69,7 @@ def _mock_person_search(query: str, limit: int = 5):
                   {
                       "search": {
                           "by": "email" | "name",
-                          "query": "string"
+                          "identifier": "string"
                       },
                       "filters": {
                           "team": "my_team" | "other_teams" | "all",
@@ -122,7 +122,7 @@ def _mock_person_search(query: str, limit: int = 5):
               Input: {
                   "search": {
                       "by": "email",
-                      "query": "albert.sunild@gmail.com"
+                      "identifier": "albert.sunild@gmail.com"
                   },
                   "filters": {
                       "team": "all",
