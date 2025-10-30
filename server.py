@@ -204,6 +204,24 @@ def search(query: dict) -> dict:
 
     return {"celebrations": celebrations, "metadata": metadata}
 
+@mcp.tool(
+    name="get full name", description="""
+    Get the full name of a person given their first and last names.
+    args:
+        first_name (str): The first name of the person.
+        last_name (str): The last name of the person.
+        returns:
+        str: The full name of the person in the format "First Last".
+    example:
+        Input:
+        first_name: "John"
+        last_name: "Doe"
+        Output:
+        "John Doe"
+    """)
+def get_full_name(first_name: str, last_name: str) -> str:
+    return f"{first_name} {last_name}"
+
 
 @mcp.tool(
     name="celebration_contributions",
@@ -432,6 +450,6 @@ def find_invitees(query: dict) -> dict:
 # RUN SERVER
 # ===================================================
 if __name__ == "__main__":
-    #mcp.run(transport="streamable-http", host="0.0.0.0", port=8080)
-    #mcp.run()  # for local testing
-    mcp.run(transport="http", host="127.0.0.1", port=8000)
+    #mcp.run(transport="streamable-http", host="127.0.0.1", port=8080)
+    mcp.run()  # for local testing
+    #mcp.run(transport="http", host="127.0.0.1", port=8000)
