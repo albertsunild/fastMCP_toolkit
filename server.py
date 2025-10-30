@@ -205,7 +205,7 @@ def search(query: dict) -> dict:
     return {"celebrations": celebrations, "metadata": metadata}
 
 @mcp.tool(
-    name="get full name", description="""
+    name="get_full_name", description="""
     Get the full name of a person given their first and last names.
     args:
         first_name (str): The first name of the person.
