@@ -103,7 +103,7 @@ search_input_schema = {
     #input_schema=search_input_schema
 )
 
-def search_tool(query: dict) -> dict:
+def search(query: dict) -> dict:
     """
     Search for service anniversary celebrations based on criteria.
     Searches for users and filters the results based on various criteria.
