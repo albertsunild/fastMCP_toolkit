@@ -3,9 +3,6 @@ from datetime import datetime, timezone, timedelta
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
-
-
-
 # ===================================================
 # FastMCP Server Setup
 # ===================================================
@@ -65,9 +62,6 @@ def _mock_person_search(query: str, limit: int = 5):
 # TOOL IMPLEMENTATIONS
 # ===================================================
 
-
-mcp=FastMCP('mcp_biw_toolkit')
-
 class Pagination(BaseModel):
     limit: int = Field("limit")
     cursor: int = Field("cursor")
@@ -107,95 +101,6 @@ def search(query: Query) -> dict:
 
     return {"celebrations": celebrations, "metadata": metadata}
 
-# search_input_schema = {
-#     "type": "object",
-#     "properties": {
-#         "query": {
-#         "type": "object",
-#         "properties": {
-#             "search": {
-#             "type": "object",
-#             "properties": {
-#                 "by": { "type": "string", "enum": ["email", "name"] },
-#                 "identifier": { "type": "string" }
-#             },
-#             "required": ["by", "identifier"]
-#             },
-#             "filters": {
-#             "type": "object",
-#             "properties": {
-#                 "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
-#                 "timePeriod": { "type": "string", "enum": ["future", "past"] },
-#                 "notBeforeDate": { "type": "string", "format": "date" },
-#                 "notAfterDate": { "type": "string", "format": "date" }
-#             }
-#             },
-#             "pagination": {
-#             "type": "object",
-#             "properties": {
-#                 "limit": { "type": "integer" },
-#                 "cursor": { "type": "integer" }
-#             }
-#             }
-#         }
-#         }
-#     }
-# }
-
-# @mcp.tool(
-#     # name="search",
-#     # description="Search for service anniversary celebrations based on criteria.",
-#     #input_schema=search_input_schema
-# )
-
-# def search(query: dict) -> dict:
-#     """
-#     Search for service anniversary celebrations based on criteria.
-#     args:
-#         {
-#             "type": "object",
-#             "properties": {
-#                 "query": {
-#                 "type": "object",
-#                 "properties": {
-#                     "search": {
-#                     "type": "object",
-#                     "properties": {
-#                         "by": { "type": "string", "enum": ["email", "name"] },
-#                         "identifier": { "type": "string" }
-#                     },
-#                     "required": ["by", "identifier"]
-#                     },
-#                     "filters": {
-#                     "type": "object",
-#                     "properties": {
-#                         "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
-#                         "timePeriod": { "type": "string", "enum": ["future", "past"] },
-#                         "notBeforeDate": { "type": "string", "format": "date" },
-#                         "notAfterDate": { "type": "string", "format": "date" }
-#                     }
-#                     },
-#                     "pagination": {
-#                     "type": "object",
-#                     "properties": {
-#                         "limit": { "type": "integer" },
-#                         "cursor": { "type": "integer" }
-#                     }
-#                     }
-#                 }
-#                 }
-#             }
-#         }
-    
-#     """
-#     pagination = query.get("pagination", {})
-#     limit = int(pagination.get("limit", 5))
-#     cursor = int(pagination.get("cursor", 0))
-
-#     celebrations = [_mock_celebration(i + cursor + 1) for i in range(limit)]
-#     metadata = {"total": 100, "nextCursor": cursor + limit}
-
-#     return {"celebrations": celebrations, "metadata": metadata}
 
 @mcp.tool(
     name="get_full_name", description="""
