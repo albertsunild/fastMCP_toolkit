@@ -87,12 +87,46 @@ class Query(BaseModel):
 @mcp.tool(name="search")
 def search(query: Query) -> dict:
     """
-    Search for service anniversary celebrations based on criteria.
-    args:
-        query (Query): The search query parameters.
-    returns:
-        dict: A dictionary containing the search results and metadata.
+    Search for upcoming service anniversary celebrations based on criteria.
+        JSON Schema for 'query' parameter:
+        {
+        "type": "object",
+        "properties": {
+            "query": {
+            "type": "object",
+            "properties": {
+                "search": {
+                "type": "object",
+                "properties": {
+                    "by": { "type": "string", "enum": ["email", "name"] },
+                    "identifier": { "type": "string" }
+                },
+                "required": ["by", "identifier"]
+                },
+                "filters": {
+                "type": "object",
+                "properties": {
+                    "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
+                    "timePeriod": { "type": "string", "enum": ["future", "past"] },
+                    "notBeforeDate": { "type": "string", "format": "date" },
+                    "notAfterDate": { "type": "string", "format": "date" }
+                }
+                },
+                "pagination": {
+                "type": "object",
+                "properties": {
+                    "limit": { "type": "integer" },
+                    "cursor": { "type": "integer" }
+                }
+                }
+            },
+            "required": ["search"]
+            }
+        },
+        "required": ["query"]
+        }
     """
+
     limit = query.query.pagination.limit
     cursor = query.query.pagination.cursor
 
@@ -100,7 +134,6 @@ def search(query: Query) -> dict:
     metadata = {"total": 100, "nextCursor": cursor + limit}
 
     return {"celebrations": celebrations, "metadata": metadata}
-
 
 @mcp.tool(
     name="get_full_name", description="""
