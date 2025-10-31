@@ -62,50 +62,47 @@ def _mock_person_search(query: str, limit: int = 5):
 # ===================================================
 
 @mcp.tool(
-    name="search",
-    description="""Searches for upcoming or past service anniversary celebrations based on search criteria, filters, and pagination details.
-          args:
-              query (dict): A dictionary containing search, filter, and pagination parameters.
-                {
-                "type": "object",
-                "properties": {
-                    "query": {
-                    "type": "object",
-                    "properties": {
-                        "search": {
-                        "type": "object",
-                        "properties": {
-                            "by": { "type": "string", "enum": ["email", "name"] },
-                            "identifier": { "type": "string" }
-                        },
-                        "required": ["by", "identifier"]
-                        },
-                        "filters": {
-                        "type": "object",
-                        "properties": {
-                            "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
-                            "timePeriod": { "type": "string", "enum": ["future", "past"] },
-                            "notBeforeDate": { "type": "string", "format": "date" },
-                            "notAfterDate": { "type": "string", "format": "date" }
-                        }
-                        },
-                        "pagination": {
-                        "type": "object",
-                        "properties": {
-                            "limit": { "type": "integer" },
-                            "cursor": { "type": "integer" }
-                        }
-                        }
-                    },
-                    "required": ["search"]
-                    }
-                },
-                "required": ["query"]
-                }
-
-          """
-)
+    name="search")
 def search(query: dict) -> dict:
+    """Search for service anniversary celebrations based on criteria.
+    JSON Schema for 'query' parameter:
+    {
+    "type": "object",
+    "properties": {
+        "query": {
+        "type": "object",
+        "properties": {
+            "search": {
+            "type": "object",
+            "properties": {
+                "by": { "type": "string", "enum": ["email", "name"] },
+                "identifier": { "type": "string" }
+            },
+            "required": ["by", "identifier"]
+            },
+            "filters": {
+            "type": "object",
+            "properties": {
+                "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
+                "timePeriod": { "type": "string", "enum": ["future", "past"] },
+                "notBeforeDate": { "type": "string", "format": "date" },
+                "notAfterDate": { "type": "string", "format": "date" }
+            }
+            },
+            "pagination": {
+            "type": "object",
+            "properties": {
+                "limit": { "type": "integer" },
+                "cursor": { "type": "integer" }
+            }
+            }
+        },
+        "required": ["search"]
+        }
+    },
+    "required": ["query"]
+    }
+"""
     pagination = query.get("pagination", {})
     limit = int(pagination.get("limit", 5))
     cursor = int(pagination.get("cursor", 0))
