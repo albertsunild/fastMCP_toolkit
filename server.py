@@ -61,12 +61,8 @@ def _mock_person_search(query: str, limit: int = 5):
 # TOOL IMPLEMENTATIONS
 # ===================================================
 
-@mcp.tool(
-    name="search")
-def search(query: dict) -> dict:
-    """Search for service anniversary celebrations based on criteria.
-    JSON Schema for 'query' parameter:
-    {
+
+search_input_schema = {
     "type": "object",
     "properties": {
         "query": {
@@ -96,13 +92,59 @@ def search(query: dict) -> dict:
                 "cursor": { "type": "integer" }
             }
             }
-        },
-        "required": ["search"]
         }
-    },
-    "required": ["query"]
+        }
     }
-"""
+}
+
+@mcp.tool(
+    # name="search",
+    # description="Search for service anniversary celebrations based on criteria.",
+    #input_schema=search_input_schema
+)
+
+def search_tool(query: dict) -> dict:
+    """
+    Search for service anniversary celebrations based on criteria.
+    Searches for users and filters the results based on various criteria.
+
+    The query parameter must be a dictionary that defines the search method,
+    optional filters, and pagination for the results.
+
+    :param query: A dictionary containing the search criteria.
+        
+        **query** must contain:
+        
+        * **search** (object, required): Defines how to identify the user(s).
+            * **by** (string, required): The method to search by. Must be one of:
+                * `"email"`: Search using the user's email address.
+                * `"name"`: Search using the user's full name.
+            * **identifier** (string, required): The value corresponding to the `by` method (e.g., an email address or a name).
+
+        **query** may optionally contain:
+        
+        * **filters** (object, optional): Used to narrow down the search results.
+            * **team** (string, optional): Filters results by team membership. Must be one of:
+                * `"my_team"`: Only show users in the caller's team.
+                * `"other_teams"`: Only show users in other teams.
+                * `"all"`: Show users from all teams.
+            * **timePeriod** (string, optional): Filters results based on a general time frame. Must be one of:
+                * `"future"`: Filter for future-related data (e.g., future events).
+                * `"past"`: Filter for past-related data (e.g., past activities).
+            * **notBeforeDate** (string, optional, format: date): Filters results to be on or after this date (e.g., "YYYY-MM-DD").
+            * **notAfterDate** (string, optional, format: date): Filters results to be on or before this date (e.g., "YYYY-MM-DD").
+
+        * **pagination** (object, optional): Controls the size and starting point of the results.
+            * **limit** (integer, optional): The maximum number of results to return.
+            * **cursor** (integer, optional): An offset or starting index for fetching the next page of results.
+
+    :return: A dictionary containing the search results.
+    """
+    # Tool logic implementation goes here
+#     pass
+
+
+# def search(query: dict) -> dict:
     pagination = query.get("pagination", {})
     limit = int(pagination.get("limit", 5))
     cursor = int(pagination.get("cursor", 0))
@@ -398,6 +440,6 @@ def find_invitees(query: dict) -> dict:
 # RUN SERVER
 # ===================================================
 if __name__ == "__main__":
-    #mcp.run(transport="streamable-http", host="127.0.0.1", port=8080)
+    mcp.run(transport="streamable-http", host="127.0.0.1", port=8080)
     #mcp.run()  # for local testing
-    mcp.run(transport="http", host="127.0.0.1", port=8000)
+    #mcp.run(transport="http", host="127.0.0.1", port=8000)
