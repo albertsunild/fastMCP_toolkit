@@ -66,132 +66,43 @@ def _mock_person_search(query: str, limit: int = 5):
     description="""Searches for upcoming or past service anniversary celebrations based on search criteria, filters, and pagination details.
           args:
               query (dict): A dictionary containing search, filter, and pagination parameters.
-                  {
-                      "search": {
-                          "by": "email" | "name",
-                          "identifier": "string"
-                      },
-                      "filters": {
-                          "team": "my_team" | "other_teams" | "all",
-                          "timePeriod": "future" | "past",
-                          "notBeforeDate": "ISO date (YYYY-MM-DD)",
-                          "notAfterDate": "ISO date (YYYY-MM-DD)"
-                      },
-                      "pagination": {
-                          "limit": int,
-                          "cursor": int
-                      }
-                  }
+                {
+                "type": "object",
+                "properties": {
+                    "query": {
+                    "type": "object",
+                    "properties": {
+                        "search": {
+                        "type": "object",
+                        "properties": {
+                            "by": { "type": "string", "enum": ["email", "name"] },
+                            "identifier": { "type": "string" }
+                        },
+                        "required": ["by", "identifier"]
+                        },
+                        "filters": {
+                        "type": "object",
+                        "properties": {
+                            "team": { "type": "string", "enum": ["my_team", "other_teams", "all"] },
+                            "timePeriod": { "type": "string", "enum": ["future", "past"] },
+                            "notBeforeDate": { "type": "string", "format": "date" },
+                            "notAfterDate": { "type": "string", "format": "date" }
+                        }
+                        },
+                        "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "limit": { "type": "integer" },
+                            "cursor": { "type": "integer" }
+                        }
+                        }
+                    },
+                    "required": ["search"]
+                    }
+                },
+                "required": ["query"]
+                }
 
-          returns:
-              A dictionary containing a list of celebrations and pagination metadata.
-                  {
-                      "celebrations": [
-                          {
-                              "celebrationId": "uuid",
-                              "milestoneName": "string",
-                              "date": "ISO datetime with timezone",
-                              "imageUrl": "string (url)",
-                              "totalInvites": int,
-                              "canContribute": bool,
-                              "hasContributed": bool,
-                              "hasCelebratorThanked": bool,
-                              "allowPrivateComments": bool,
-                              "thankYouMessage": {
-                                  "comment": "string",
-                                  "totalLikes": int
-                              },
-                              "celebrator": {
-                                  "rosterPersonId": "uuid",
-                                  "firstName": "string",
-                                  "lastName": "string",
-                                  "emailAddress": "email",
-                                  "avatarUrl": "string (url)",
-                                  "jobTitle": "string",
-                                  "isInMyTeam": bool
-                              }
-                          }
-                      ],
-                      "metadata": {
-                          "total": int,
-                          "nextCursor": int
-                      }
-                  }
-
-          example:
-              Input: {
-                  "search": {
-                      "by": "email",
-                      "identifier": "albert.sunild@gmail.com"
-                  },
-                  "filters": {
-                      "team": "all",
-                      "timePeriod": "future",
-                      "notBeforeDate": "2025-10-28",
-                      "notAfterDate": "2025-12-28"
-                  },
-                  "pagination": {
-                      "limit": 2,
-                      "cursor": 0
-                  }
-              }
-
-              Output: {
-                  "celebrations": [
-                      {
-                          "celebrationId": "3161962f-ef67-4981-b7db-5df9dac90f1f",
-                          "milestoneName": "Service Anniversary 1",
-                          "date": "2025-11-04T08:59:01.617421+00:00",
-                          "imageUrl": "https://example.com/milestone.png",
-                          "totalInvites": 6,
-                          "canContribute": true,
-                          "hasContributed": false,
-                          "hasCelebratorThanked": false,
-                          "allowPrivateComments": true,
-                          "thankYouMessage": {
-                              "comment": "Thanks team!",
-                              "totalLikes": 1
-                          },
-                          "celebrator": {
-                              "rosterPersonId": "9bd907a4-a149-4791-8294-e1103f4d9163",
-                              "firstName": "User1",
-                              "lastName": "Example",
-                              "emailAddress": "user1@example.com",
-                              "avatarUrl": "https://example.com/avatar.png",
-                              "jobTitle": "Software Engineer",
-                              "isInMyTeam": false
-                          }
-                      },
-                      {
-                          "celebrationId": "f0bfca85-354f-42cb-a7c3-0021e91b014f",
-                          "milestoneName": "Service Anniversary 2",
-                          "date": "2025-11-11T08:59:01.617501+00:00",
-                          "imageUrl": "https://example.com/milestone.png",
-                          "totalInvites": 7,
-                          "canContribute": true,
-                          "hasContributed": true,
-                          "hasCelebratorThanked": false,
-                          "allowPrivateComments": true,
-                          "thankYouMessage": {
-                              "comment": "Thanks team!",
-                              "totalLikes": 2
-                          },
-                          "celebrator": {
-                              "rosterPersonId": "c2fea338-a67c-413b-8ff8-194e9e125d56",
-                              "firstName": "User2",
-                              "lastName": "Example",
-                              "emailAddress": "user2@example.com",
-                              "avatarUrl": "https://example.com/avatar.png",
-                              "jobTitle": "Software Engineer",
-                              "isInMyTeam": true
-                          }
-                      }
-                  ],
-                  "metadata": {
-                      "total": 100,
-                      "nextCursor": 2
-                  }
-              }
           """
 )
 def search(query: dict) -> dict:
@@ -222,6 +133,46 @@ def search(query: dict) -> dict:
 def get_full_name(first_name: str, last_name: str) -> str:
     return f"{first_name} {last_name}"
 
+@mcp.tool()    
+def get_personal_details(first_name: str, last_name: str, email_address: str, company_name: str ) -> dict:
+    """
+    Get the personal details of a person given their first and last names, email address and company name.
+          args: 
+          first_name (str): The first name of the person.
+          last_name (str): The last name of the person.
+          email_address (str): The email address of the person.
+          returns:
+          dict: A dictionary containing the personal details of the person.
+              {
+                  "firstName": "string",
+                  "lastName": "string",
+                  "emailAddress": "string",
+                  "fullName": "string",
+                    "company_name": "string"
+              }
+          example:
+              Input:
+              first_name: "John"
+              last_name: "Doe"
+              email_address: "john.doe@example.com"
+            company_name: "example.Inc"
+                Output:
+                {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "emailAddress": "john.doe@exampl.com",
+                    "fullName": "John Doe",
+                    "company_name": "example.Inc"
+                }
+    """
+    full_name = get_full_name(first_name, last_name)
+    return {
+        "firstName": first_name,
+        "lastName": last_name,
+        "emailAddress": email_address,
+        "fullName": full_name,
+        "company_name": company_name
+    }   
 
 @mcp.tool(
     name="celebration_contributions",
@@ -451,5 +402,5 @@ def find_invitees(query: dict) -> dict:
 # ===================================================
 if __name__ == "__main__":
     #mcp.run(transport="streamable-http", host="127.0.0.1", port=8080)
-    mcp.run()  # for local testing
-    #mcp.run(transport="http", host="127.0.0.1", port=8000)
+    #mcp.run()  # for local testing
+    mcp.run(transport="http", host="127.0.0.1", port=8000)
